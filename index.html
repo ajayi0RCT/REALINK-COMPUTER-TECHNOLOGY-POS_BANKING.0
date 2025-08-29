@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>REALINK COMPUTER TECHNOLOGY - Sales Tracker</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f7f9fc; margin:0; padding:20px; }
+    .container { max-width:900px; margin:0 auto; }
+    header { text-align:center; margin-bottom:18px; }
+    h1 { color:#0066cc; margin:6px 0; }
+    .sub { color:#333; margin:0; font-weight:600; }
+    .small { color:#666; margin:4px 0 14px 0; font-size:14px; }
+    .card { background:#fff; padding:14px; border-radius:8px; box-shadow:0 6px 18px rgba(20,30,50,0.06); margin-bottom:14px; }
+    input, button { padding:8px 10px; margin:6px 0; border-radius:6px; border:1px solid #ddd; font-size:14px; }
+    button { background:#0066cc; color:white; cursor:pointer; border:none; }
+    button.danger { background:#d9534f; }
+    .grid { display:flex; gap:10px; flex-wrap:wrap; }
+    .grid input { flex:1; min-width:120px; }
+    table { width:100%; border-collapse:collapse; margin-top:12px; }
+    th, td { border:1px solid #e6eef8; padding:8px; text-align:center; font-size:14px; }
+    th { background:#0066cc; color:white; }
+    .actions { display:flex; gap:8px; justify-content:center; margin-top:12px; }
+    .total { text-align:right; margin-top:10px; font-weight:700; font-size:16px; }
+    @media print {
+      body * { visibility: hidden; }
+      #printArea, #printArea * { visibility: visible; }
+      #printArea { position: absolute; left:0; top:0; width:100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>REALINK COMPUTER TECHNOLOGY</h1>
+      <div class="sub">Sales & Account Tracker</div>
+      <div class="small">Phone: 08132837955</div>
+    </header>
+
+    <!-- LOGIN -->
+    <div id="loginBox" class="card">
+      <h3>Login</h3>
+      <input id="passwordInput" type="password" placeholder="Enter password" />
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <button onclick="login()">Login</button>
+      </div>
+      <p id="loginErr" style="color:#d9534f;display:none;margin-top:8px;">Wrong password</p>
+    </div>
+
+    <!-- APP -->
+    <div id="app" style="display:none;">
+      <div class="card">
+        <h3>Add Sale</h3>
+        <div class="grid">
+          <input id="itemInput" type="text" placeholder="Item name" />
+          <input id="priceInput" type="number" placeholder="Price (₦)" />
+          <input id="qtyInput" type="number" placeholder="Quantity" />
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button onclick="addSale()">Add Sale</button>
+          <button onclick="deleteAll()" class="danger">Delete All</button>
+          <button onclick="printReceipt()">🖨 Print Receipt</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Sales Records</h3>
+        <table id="salesTable">
+          <thead>
+            <tr>
+              <th>Select</th>
+              <th>#</th>
+              <th>Item</th>
+              <th>Price (₦)</th>
+              <th>Qty</th>
+              <th>Total (₦)</th>
+              <th>Date & Time</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+
+        <div class="actions">
+          <button onclick="deleteSelected()" class="danger">Delete Selected</button>
+          <button onclick="exportCSV()">Export CSV</button>
+        </div>
+
+        <div class="total" id="grandTotal">Grand Total: ₦0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Print area template (hidden normally) -->
+  <div id="printArea" style="display:none;"></div>
+
+  <script>
+    const PASSWORD = "12345";
+    const PHONE = "08132837955";
+    const STORAGE_KEY = "realink_sales_v1";
+
+    // Login
+    function login(){
+      const val = document.getElementById("passwordInput").value;
+      if(val === PASSWORD){
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("app").style.display = "block";
+        loadSales();
+      } else {
+        const e = document.getElementById("loginErr");
+        e.style.display = "block";
+        setTimeout(()=> e.style.display = "none", 2500);
+      }
+    }
+
+    // Sales helpers
+    function getSales(){ return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+    function saveSales(s){ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+
+    function addSale(){
+      const item = document.getElementById("itemInput").value.trim();
+      const price = parseFloat(document.getElementById("priceInput").value);
+      const qty = parseInt(document.getElementById("qtyInput").value, 10);
+
+      if(!item || isNaN(price) || isNaN(qty) || price <= 0 || qty <= 0){
+        alert("Please enter a valid item, price and quantity.");
+        return;
+      }
+
+      const now = new Date();
+      const sale = {
+        item,
+        price: Math.round(price * 100) / 100,
+        qty,
+        total: Math.round(price * qty * 100) / 100,
+        datetime: now.toISOString()
+      };
+
+      const s = getSales();
+      s.push(sale);
+      saveSales(s);
+      document.getElementById("itemInput").value = "";
+      document.getElementById("priceInput").value = "";
+      document.getElementById("qtyInput").value = "";
+      loadSales();
+    }
+
+    function loadSales(){
+      const s = getSales();
+      const tbody = document.querySelector("#salesTable tbody");
+      tbody.innerHTML = "";
+      let grand = 0;
+      s.forEach((sale, idx) => {
+        grand += Number(sale.total);
+        const dt = new Date(sale.datetime);
+        const dtf = dt.toLocaleString(); // local readable
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><input type="checkbox" data-idx="${idx}"></td>
+          <td>${idx + 1}</td>
+          <td>${escapeHtml(sale.item)}</td>
+          <td>₦${formatNumber(sale.price)}</td>
+          <td>${sale.qty}</td>
+          <td>₦${formatNumber(sale.total)}</td>
+          <td>${dtf}</td>
+          <td><button onclick="deleteOne(${idx})" style="background:#d9534f;color:#fff;padding:6px;border-radius:4px;border:none;cursor:pointer;">Delete</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+      document.getElementById("grandTotal").textContent = "Grand Total: ₦" + formatNumber(grand);
+    }
+
+    function deleteOne(i){
+      if(!confirm("Delete this sale?")) return;
+      const s = getSales();
+      s.splice(i,1);
+      saveSales(s);
+      loadSales();
+    }
+
+    function deleteSelected(){
+      const checked = Array.from(document.querySelectorAll("#salesTable tbody input[type=checkbox]:checked"))
+        .map(cb => parseInt(cb.getAttribute("data-idx"),10));
+      if(checked.length === 0){ alert("Select at least one sale to delete."); return; }
+      if(!confirm(`Delete ${checked.length} selected sale(s)?`)) return;
+      let s = getSales();
+      s = s.filter((_, idx) => !checked.includes(idx));
+      saveSales(s);
+      loadSales();
+    }
+
+    function deleteAll(){
+      if(!confirm("Are you sure you want to delete ALL sales?")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      loadSales();
+    }
+
+    // Print/receipt
+    function printReceipt(){
+      const s = getSales();
+      if(s.length === 0){ alert("No sales to print."); return; }
+
+      const now = new Date();
+      const receiptNo = "R-" + now.getTime();
+      const dateStr = now.toLocaleString();
+
+      let html = "";
+      html += `<div style="font-family:monospace; padding:10px; max-width:360px;">`;
+      html += `<h3 style="margin:0;text-align:center;">REALINK COMPUTER TECHNOLOGY</h3>`;
+      html += `<div style="text-align:center; font-weight:600;">Phone: ${PHONE}</div>`;
+      html += `<div style="text-align:center; margin-bottom:8px;">Receipt: ${receiptNo}<br>${dateStr}</div>`;
+      html += `<table style="width:100%; border-collapse:collapse; font-size:13px;">`;
+      html += `<thead><tr><th style="text-align:left;">Item</th><th>Qty</th><th style="text-align:right;">Total</th></tr></thead><tbody>`;
+      let grand = 0;
+      s.forEach(it => {
+        html += `<tr><td style="text-align:left;">${escapeHtml(it.item)}</td><td style="text-align:center;">${it.qty}</td><td style="text-align:right;">₦${formatNumber(it.total)}</td></tr>`;
+        grand += Number(it.total);
+      });
+      html += `</tbody></table>`;
+      html += `<div style="text-align:right; font-weight:700; margin-top:8px;">Grand Total: ₦${formatNumber(grand)}</div>`;
+      html += `<div style="margin-top:10px; font-size:12px; text-align:center;">Thank you for your patronage!</div>`;
+      html += `</div>`;
+
+      const printArea = document.getElementById("printArea");
+      printArea.innerHTML = html;
+      // show print area then print
+      printArea.style.display = "block";
+      window.print();
+      // hide after printing
+      setTimeout(()=> { printArea.style.display = "none"; printArea.innerHTML = ""; }, 500);
+    }
+
+    // Helpers
+    function formatNumber(n){
+      return Number(n).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2});
+    }
+    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;'}[m])); }
+
+    // CSV export (optional)
+    function exportCSV(){
+      const s = getSales();
+      if(s.length === 0){ alert("No data to export."); return; }
+      const rows = [["Item","Price","Qty","Total","DateTime"]];
+      s.forEach(r => rows.push([r.item, r.price, r.qty, r.total, r.datetime]));
+      const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n");
+      const blob = new Blob([csv], {type:"text/csv"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = "sales_export.csv"; document.body.appendChild(a); a.click();
+      URL.revokeObjectURL(url); a.remove();
+    }
+
+    // load initial (if user already logged in and stored state)
+    // (we keep login required each session for simplicity)
+  </script>
+</body>
+</html>
