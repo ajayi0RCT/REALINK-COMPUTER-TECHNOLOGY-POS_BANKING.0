@@ -1,383 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Realink Computer Technology</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Google Identity Services -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <style>
-        body { font-family: 'Poppins', sans-serif; }
-        #typing::after {
-            content: '|';
-            animation: blink 0.7s infinite;
-            margin-left: 2px;
-        }
-        @keyframes blink {
-            0%, 50%, 100% { opacity: 1; }
-            25%, 75% { opacity: 0; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Realink Pro POS Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script type="module" src="dashboard.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body { font-family: 'Poppins', sans-serif; }
+  .sidebar { width: 250px; }
+</style>
 </head>
-<body>
-    <!-- Navigation -->
-    <nav class="bg-white shadow-md py-4 px-6">
-        <div class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center">
-                <img src="Realink.png" alt="Logo" width="80" class="mr-2">
-                <span class="text-xl font-bold text-gray-800">Realink</span>
-            </div>
-            <div class="hidden md:flex space-x-6">
-                <a href="#home" class="text-gray-600 hover:text-blue-600">Home</a>
-                <a href="#services" class="text-gray-600 hover:text-blue-600">Services</a>
-                <a href="#about" class="text-gray-600 hover:text-blue-600">About</a>
-                <a href="#contact" class="text-gray-600 hover:text-blue-600">Contact</a>
-                <button id="auth-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">Login</button>
-            </div>
-            <div class="md:hidden">
-                <button id="menu-btn" class="text-gray-600 focus:outline-none">
-                    <i class="fas fa-bars text-xl"></i>
-                </button>
-            </div>
-        </div>
-        <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-2 px-6">
-            <a href="#home" class="block text-gray-600 hover:text-blue-600">Home</a>
-            <a href="#services" class="block text-gray-600 hover:text-blue-600">Services</a>
-            <a href="#about" class="block text-gray-600 hover:text-blue-600">About</a>
-            <a href="#contact" class="block text-gray-600 hover:text-blue-600">Contact</a>
-            <button id="auth-btn-mobile" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300 w-full">Login</button>
-        </div>
-    </nav>
+<body class="bg-gray-100 flex">
 
-    <!-- Hero Section -->
-    <section id="home" class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-20">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-2xl font-semibold mb-4">
-                <span id="typing"></span>
-            </h2>
-            <h1 class="text-4xl font-bold mb-4">Innovative IT Solutions for Modern Businesses</h1>
-            <p class="text-xl mb-8 max-w-3xl mx-auto">
-                Providing cutting-edge technology solutions to empower your business operations
-            </p>
-            <div class="flex justify-center space-x-4">
-                <button id="hero-get-started" class="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition duration-300">Get Started</button>
-                <button class="border border-white text-white px-6 py-3 rounded-full font-semibold hover:bg-white hover:text-blue-600 transition duration-300">Learn More</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Services Section -->
-    <section id="services" class="py-16 bg-white">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Our Services</h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-gray-50 p-8 rounded-lg shadow-sm">
-                    <div class="flex items-center mb-6">
-                        <i class="fas fa-desktop text-blue-600 text-2xl mr-3"></i>
-                        <h3 class="text-xl font-semibold text-gray-800">Computer Hardware</h3>
-                    </div>
-                    <p class="text-gray-600 mb-4">Supply and maintenance of high-quality computers, servers, and peripherals.</p>
-                    <a href="#" class="text-blue-600 font-medium hover:underline">Learn more →</a>
-                </div>
-                <div class="bg-gray-50 p-8 rounded-lg shadow-sm">
-                    <div class="flex items-center mb-6">
-                        <i class="fas fa-network-wired text-green-600 text-2xl mr-3"></i>
-                        <h3 class="text-xl font-semibold text-gray-800">Network Solutions</h3>
-                    </div>
-                    <p class="text-gray-600 mb-4">Design, installation, and management of secure network infrastructure.</p>
-                    <a href="#" class="text-blue-600 font-medium hover:underline">Learn more →</a>
-                </div>
-                <div class="bg-gray-50 p-8 rounded-lg shadow-sm">
-                    <div class="flex items-center mb-6">
-                        <i class="fas fa-shield-alt text-purple-600 text-2xl mr-3"></i>
-                        <h3 class="text-xl font-semibold text-gray-800">Cybersecurity</h3>
-                    </div>
-                    <p class="text-gray-600 mb-4">Comprehensive security solutions including firewalls, antivirus, and threat detection.</p>
-                    <a href="#" class="text-blue-600 font-medium hover:underline">Learn more →</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="py-16 bg-gray-50">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">About Realink Computer Technology</h2>
-            <div class="max-w-4xl mx-auto text-center">
-                <p class="text-gray-600 leading-relaxed mb-6">
-                    Realink Computer Technology is a leading provider of comprehensive IT solutions for businesses of all sizes. Founded in 2015, we specialize in delivering innovative technology solutions that enhance productivity, improve efficiency, and drive growth.
-                </p>
-                <p class="text-gray-600 leading-relaxed">
-                    Our team of experienced professionals is dedicated to understanding your unique business needs and providing tailored solutions that meet those requirements. With a commitment to excellence and customer satisfaction, we strive to be your trusted technology partner.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="py-16 bg-white">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Get in Touch</h2>
-            <div class="grid md:grid-cols-2 gap-12">
-                <div>
-                    <h3 class="text-xl font-semibold mb-6 text-gray-800">Contact Information</h3>
-                    <div class="space-y-6">
-                        <div class="flex items-start">
-                            <i class="fas fa-phone text-blue-600 text-xl mr-4 mt-1"></i>
-                            <div>
-                                <h4 class="font-medium text-gray-800">Phone</h4>
-                                <p class="text-gray-600">08132837955</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <i class="fas fa-envelope text-green-600 text-xl mr-4 mt-1"></i>
-                            <div>
-                                <h4 class="font-medium text-gray-800">Email</h4>
-                                <p class="text-gray-600">Realinkcyber02@gmail.com</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <i class="fas fa-map-marker-alt text-red-600 text-xl mr-4 mt-1"></i>
-                            <div>
-                                <h4 class="font-medium text-gray-800">Address</h4>
-                                <p class="text-gray-600">47, Lawni Street, Abule-Oja, Yaba, Lagos</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <h3 class="text-xl font-semibold mb-6 text-gray-800">Send Us a Message</h3>
-                    <form id="contact-form" action="https://formspree.io/f/xgvlllyb" method="POST" class="space-y-4">
-                        <div>
-                            <label for="name" class="block text-gray-700 mb-2">Name</label>
-                            <input type="text" name="name" id="name" placeholder="Your Name" required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
-                        </div>
-                        <div>
-                            <label for="email" class="block text-gray-700 mb-2">Email</label>
-                            <input type="email" name="email" id="email" placeholder="Your Email" required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
-                        </div>
-                        <div>
-                            <label for="message" class="block text-gray-700 mb-2">Message</label>
-                            <textarea name="message" id="message" rows="4" placeholder="Your Message" required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"></textarea>
-                        </div>
-                        <p id="form-message" class="hidden text-center"></p>
-                        <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">Send Message</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-12">
-        <div class="container mx-auto px-6">
-            <div class="grid md:grid-cols-4 gap-8">
-                <div>
-                    <div class="flex items-center mb-4">
-                        <i class="fas fa-laptop-code text-blue-400 text-2xl mr-2"></i>
-                        <span class="text-xl font-bold">Realink</span>
-                    </div>
-                    <p class="text-gray-400">Your trusted partner in innovative technology solutions.</p>
-                </div>
-                <div>
-                    <h4 class="font-semibold mb-4">Services</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-white">Hardware Supply</a></li>
-                        <li><a href="#" class="hover:text-white">Networking</a></li>
-                        <li><a href="#" class="hover:text-white">Security Solutions</a></li>
-                        <li><a href="#" class="hover:text-white">IT Consulting</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-semibold mb-4">Company</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-white">About Us</a></li>
-                        <li><a href="#" class="hover:text-white">Careers</a></li>
-                        <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
-                        <li><a href="#" class="hover:text-white">Terms of Service</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-semibold mb-4">Connect</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li class="flex items-center"><i class="fab fa-facebook-f mr-2"></i> Facebook</li>
-                        <li class="flex items-center"><i class="fab fa-twitter mr-2"></i> Twitter</li>
-                        <li class="flex items-center"><i class="fab fa-linkedin-in mr-2"></i> LinkedIn</li>
-                        <li class="flex items-center"><i class="fab fa-instagram mr-2"></i> Instagram</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 mt-10 pt-6 text-center text-gray-400">
-                <p>&copy; 2025 Realink Computer Technology. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Auth Modal -->
-    <div id="auth-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-        <div class="bg-white rounded-lg w-96 p-6 relative">
-            <button id="close-modal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800">
-                <i class="fas fa-times"></i>
-            </button>
-            <div class="flex justify-center mb-6 space-x-4">
-                <button id="sign-in-tab" class="font-semibold border-b-2 border-blue-600 pb-1">Sign In</button>
-                <button id="sign-up-tab" class="font-semibold text-gray-500 hover:text-gray-800 pb-1">Sign Up</button>
-            </div>
-
-            <!-- Sign In Form -->
-            <form id="sign-in-form" class="space-y-4">
-                <input type="email" placeholder="Email" required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
-                <input type="password" placeholder="Password" required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
-                <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">Sign In</button>
-            </form>
-
-            <!-- Sign Up Form -->
-            <form id="sign-up-form" class="space-y-4 hidden">
-                <input type="text" placeholder="Full Name" required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
-                <input type="email" placeholder="Email" required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
-                <input type="password" placeholder="Password" required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
-                <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">Sign Up</button>
-            </form>
-
-            <!-- Google Sign-In -->
-            <div class="mt-4 text-center">
-                <p class="text-gray-500 mb-2">Or sign in with</p>
-                <div id="g_id_onload"
-                     data-client_id="70979191974-h29l0gnp7vb8o6tg9k2entnj84gctcrd.apps.googleusercontent.com"
-                     data-callback="handleCredentialResponse"
-                     data-auto_prompt="false">
-                </div>
-                <div class="g_id_signin"
-                     data-type="standard"
-                     data-shape="rectangular"
-                     data-theme="outline"
-                     data-text="sign_in_with"
-                     data-size="large">
-                </div>
-            </div>
-        </div>
+  <!-- Sidebar -->
+  <aside class="sidebar bg-white h-screen shadow-md p-6 fixed">
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold text-blue-600">Realink POS</h1>
     </div>
+    <nav class="space-y-2">
+      <button data-section="dashboard" class="w-full text-left px-4 py-2 hover:bg-blue-100 rounded">Dashboard</button>
+      <button data-section="cashier" class="w-full text-left px-4 py-2 hover:bg-blue-100 rounded">Cashier</button>
+      <button data-section="products" class="w-full text-left px-4 py-2 hover:bg-blue-100 rounded">Products</button>
+      <button data-section="analytics" class="w-full text-left px-4 py-2 hover:bg-blue-100 rounded">Analytics</button>
+      <button data-section="customers" class="w-full text-left px-4 py-2 hover:bg-blue-100 rounded">Customers</button>
+      <button data-section="reports" class="w-full text-left px-4 py-2 hover:bg-blue-100 rounded">Reports</button>
+      <button data-section="pending" class="w-full text-left px-4 py-2 hover:bg-blue-100 rounded">Pending Payments</button>
+    </nav>
+  </aside>
 
-    <!-- JavaScript -->
-    <script>
-        // Mobile menu toggle
-        const menuBtn = document.getElementById("menu-btn");
-        const mobileMenu = document.getElementById("mobile-menu");
-        menuBtn.addEventListener("click", () => {
-            mobileMenu.classList.toggle("hidden");
-        });
+  <!-- Main Content -->
+  <div class="flex-1 ml-64 p-6">
+    <!-- Top Header -->
+    <header class="flex justify-between items-center mb-6">
+      <input type="text" placeholder="Search..." class="px-4 py-2 border rounded w-1/3">
+      <div class="flex items-center space-x-4">
+        <button><i class="fas fa-bell text-gray-600"></i></button>
+        <div class="flex items-center space-x-2">
+          <img src="https://via.placeholder.com/35" class="rounded-full">
+          <span class="font-medium">Admin</span>
+        </div>
+      </div>
+    </header>
 
-        // Typing animation
-        const typingText = ["Welcome to Realink Computer Technology"];
-        let i = 0, j = 0;
-        const typingElement = document.getElementById("typing");
-        function type() {
-            if (j < typingText[i].length) {
-                typingElement.innerHTML += typingText[i].charAt(j);
-                j++;
-                setTimeout(type, 100);
-            } else {
-                setTimeout(() => {
-                    typingElement.innerHTML = "";
-                    j = 0;
-                    type();
-                }, 3000);
-            }
-        }
-        type();
+    <!-- Dynamic Section -->
+    <div id="section-content"></div>
+  </div>
 
-        // Contact form
-        document.getElementById("contact-form").addEventListener("submit", function(e) {
-            e.preventDefault();
-            const form = e.target;
-            const formMessage = document.getElementById("form-message");
+  <!-- Calculator Modal -->
+  <div id="calculator" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded shadow-lg hidden z-50 w-80">
+    <h2 class="text-xl font-bold mb-4">Calculator</h2>
+    <input type="text" id="calc-display" class="w-full p-2 mb-4 border rounded text-right" readonly>
+    <div class="grid grid-cols-4 gap-2">
+      <button class="calc-btn">7</button>
+      <button class="calc-btn">8</button>
+      <button class="calc-btn">9</button>
+      <button class="calc-btn">/</button>
+      <button class="calc-btn">4</button>
+      <button class="calc-btn">5</button>
+      <button class="calc-btn">6</button>
+      <button class="calc-btn">*</button>
+      <button class="calc-btn">1</button>
+      <button class="calc-btn">2</button>
+      <button class="calc-btn">3</button>
+      <button class="calc-btn">-</button>
+      <button class="calc-btn">0</button>
+      <button class="calc-btn">.</button>
+      <button id="calc-equals" class="bg-blue-600 text-white rounded">=</button>
+      <button class="calc-btn">+</button>
+      <button id="calc-clear" class="col-span-4 bg-red-500 text-white rounded">Clear</button>
+    </div>
+  </div>
+  <button id="open-calc" class="fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-2 rounded shadow-lg hover:bg-blue-700">Calculator</button>
 
-            fetch(form.action, {
-                method: "POST",
-                body: new FormData(form),
-                headers: { "Accept": "application/json" }
-            })
-            .then(response => {
-                if (response.ok) {
-                    formMessage.textContent = "✅ Message sent successfully!";
-                    formMessage.classList.remove("text-red-600");
-                    formMessage.classList.add("text-green-600");
-                    formMessage.classList.remove("hidden");
-                    form.reset();
-                } else {
-                    return response.json().then(data => { throw new Error(data.error || "Oops! There was a problem."); });
-                }
-            })
-            .catch(error => {
-                formMessage.textContent = "❌ " + error.message;
-                formMessage.classList.remove("text-green-600");
-                formMessage.classList.add("text-red-600");
-                formMessage.classList.remove("hidden");
-            });
-        });
-
-        // Modal toggle
-        const authBtn = document.getElementById("auth-btn");
-        const authBtnMobile = document.getElementById("auth-btn-mobile");
-        const authModal = document.getElementById("auth-modal");
-        const closeModal = document.getElementById("close-modal");
-        const heroBtn = document.getElementById("hero-get-started");
-
-        [authBtn, authBtnMobile, heroBtn].forEach(btn => {
-            btn.addEventListener("click", () => authModal.classList.remove("hidden"));
-        });
-        closeModal.addEventListener("click", () => authModal.classList.add("hidden"));
-
-        // Switch tabs
-        const signInTab = document.getElementById("sign-in-tab");
-        const signUpTab = document.getElementById("sign-up-tab");
-        const signInForm = document.getElementById("sign-in-form");
-        const signUpForm = document.getElementById("sign-up-form");
-
-        signInTab.addEventListener("click", () => {
-            signInForm.classList.remove("hidden");
-            signUpForm.classList.add("hidden");
-            signInTab.classList.add("border-blue-600");
-            signUpTab.classList.remove("border-blue-600");
-            signUpTab.classList.add("text-gray-500");
-            signInTab.classList.remove("text-gray-500");
-        });
-
-        signUpTab.addEventListener("click", () => {
-            signUpForm.classList.remove("hidden");
-            signInForm.classList.add("hidden");
-            signUpTab.classList.add("border-blue-600");
-            signInTab.classList.remove("border-blue-600");
-            signInTab.classList.add("text-gray-500");
-            signUpTab.classList.remove("text-gray-500");
-        });
-
-        // Close modal when clicking outside box
-        window.addEventListener("click", (e) => {
-            if (e.target === authModal) {
-                authModal.classList.add("hidden");
-            }
-        });
-
-        // Google Sign-In callback
-        function handleCredentialResponse(response) {
-            const base64Url = response.credential.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const user = JSON.parse(atob(base64));
-            alert(`Hello, ${user.name} (${user.email})`);
-            authModal.classList.add("hidden");
-        }
-    </script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>
